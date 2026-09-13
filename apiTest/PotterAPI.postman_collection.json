@@ -8,6 +8,17 @@
   "item": [
     {
       "name": "Shorting hat",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "const code = pm.response.code;\nconst body = pm.response.json();\n\nconsole.log(code);\nconsole.log(body.sortingHatSays);\n\npm.test(\"Status code shoould be 2OO\",function(){\n    pm.expect(code).to.eql(200)\n});\n\npm.test(\"Response should contain sortingHat key\",function(){\npm.expect(body).to.contain.key(\"sortingHatSays\")\n})\n\npm.test(\"Message from sorting hat should not be empty\", function () {\n    pm.expect(body.sortingHatSays).not.to.be.empty;})\n\npm.test(\"Message from hause not be empty\", function(){\n    pm.expect(body.house).not.to.be.empty;\n})    \n\npm.test(\"House is one of Gryffindor, Slytherin, Ravenclaw, Hufflepuff\", function(){\n    pm.expect(body.house).is.oneOf([\"Gryffindor\", \"Slytherin\", \"Ravenclaw\", \"Hufflepuff\"])\n})"
+            ]
+          }
+        }
+      ],
       "request": {
         "method": "GET",
         "header": [],
