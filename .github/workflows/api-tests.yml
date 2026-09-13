@@ -34,8 +34,18 @@ jobs:
           done
           echo "Server běží a odpovídá!"
 
-      # Spuštění Postman testů pomocí CLI nástroje Newman
-      - name: Run Postman API Tests
+      # Instalace htmlextra reporteru a spuštění testů s generováním HTML
+      - name: Run Postman API Tests with HTML Report
         run: |
           cd apiTest
-          npx newman run PotterAPI.postman_collection.json -e environment.json
+          npm install -g newman newman-reporter-htmlextra
+          newman run PotterAPI.postman_collection.json -e environment.json -r htmlextra --reporter-htmlextra-export report.html
+
+      # Uložení reportu jako artefaktu v GitHubu (spustí se vždy, i při selhání testů)
+      - name: Upload HTML Test Report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: postman-html-report
+          path: apiTest/report.html
+          retention-days: 7
