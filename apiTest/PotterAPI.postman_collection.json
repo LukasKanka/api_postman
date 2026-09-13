@@ -14,7 +14,7 @@
           "script": {
             "type": "text/javascript",
             "exec": [
-              "const code = pm.response.code;\nconst body = pm.response.json();\n\nconsole.log(code);\nconsole.log(body.sortingHatSays);\n\npm.test(\"Status code shoould be 2OO\",function(){\n    pm.expect(code).to.eql(200)\n});\n\npm.test(\"Response should contain sortingHat key\",function(){\npm.expect(body).to.contain.key(\"sortingHatSays\")\n})\n\npm.test(\"Message from sorting hat should not be empty\", function () {\n    pm.expect(body.sortingHatSays).not.to.be.empty;})\n\npm.test(\"Message from hause not be empty\", function(){\n    pm.expect(body.house).not.to.be.empty;\n})    \n\npm.test(\"House is one of Gryffindor, Slytherin, Ravenclaw, Hufflepuff\", function(){\n    pm.expect(body.house).is.oneOf([\"Gryffindor\", \"Slytherin\", \"Ravenclaw\", \"Hufflepuff\"])\n})"
+              "const code = pm.response.code;\nconst jsonData = pm.response.json();\nconst response = pm.response;\nconst expectedHouses = [\"Gryffindor\", \"Slytherin\", \"Ravenclaw\", \"Hufflepuff\"];\n\nconsole.log(response)\nconsole.log(code);\nconsole.log(jsonData.sortingHatSays);\nconsole.info('Já jsem jen info');\nconsole.warn('Já jsem jen varování');\nconsole.error('Já jsem jen error');\n\npm.test(\"Status code shoould be 2OO\",()=>{\n    pm.expect(code).to.eql(200)\n});\n\npm.test(\"Response should contain sortingHat key\",()=>{\npm.expect(jsonData).to.contain.key(\"sortingHatSays\")\n});\n\npm.test(\"Message from sorting hat should not be empty\", ()=>{\n    pm.expect(jsonData.sortingHatSays).not.to.be.empty;})\n\npm.test(\"Message from hause not be empty\", ()=>{\n    pm.expect(jsonData.house).not.to.be.empty;\n}) ;   \n\n// Očékavané fakulty\npm.test(\"House is one of\"+expectedHouses, ()=>{\n    pm.expect(jsonData.house).is.oneOf(expectedHouses)\n});\n\npm.test(\"Header contains Content-Type application/json\", \n    ()=>{\n        pm.expect(response).to.have.header('Content-Type');\n        pm.expect(response.headers.get('Content-Type')).to.contain('application/json');\n    });\n\n// Ověřím odpověď do 550 ms \npm.test(\"Response time is less than 550 ms\", ()=>{\n    pm.expect(response.responseTime).to.be.below(550)\n})"
             ]
           }
         }
@@ -26,6 +26,69 @@
           "raw": "{{potter1}}sortingHat",
           "host": [
             "{{potter1}}sortingHat"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Get spells",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "const jsonData = pm.response.json();\n\n// Ověřím že se mi vrací Curse z (Query Params)\npm.test(\"Each spell should have type Curse\", ()=>{\n    jsonData.forEach(spellMember => pm.expect(spellMember.type).to.eql(\"Curse\"))\n});\n\n\n\n// Ověřím že se mi vrací pouze 2 záznamy (limit)\npm.test(\"Response should contain exactly 2 spells\",                                 ()=>{\n    pm.expect(jsonData).has.length(2)                              \n});\n"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{potter1}}spells?type=Curse&limit=2",
+          "host": [
+            "{{potter1}}spells"
+          ],
+          "query": [
+            {
+              "key": "type",
+              "value": "Curse"
+            },
+            {
+              "key": "limit",
+              "value": "2"
+            }
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Get specific spell",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "const expectedSpell={\n    \"id\": \"5b74ed6d3228320021ab622f\",\n    \"spell\": \"Alohomora\",\n    \"type\": \"Charm\",\n    \"effect\": \"opens locked objects\",\n    \"isUnforgivable\": false\n}\n\npm.test(\"It should return the correct spell\", ()=> {\n    pm.expect(pm.response.json()).to.deep.equal(expectedSpell)\n})"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{potter1}}spells/5b74ed6d3228320021ab622f",
+          "host": [
+            "{{potter1}}spells"
+          ],
+          "path": [
+            "5b74ed6d3228320021ab622f"
           ]
         }
       },
