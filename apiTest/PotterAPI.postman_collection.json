@@ -1,0 +1,35 @@
+{
+  "info": {
+    "_postman_id": "07c118ea-95ef-48c7-b716-ee7a99883e3e",
+    "name": "PotterAPI",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "58156784"
+  },
+  "item": [
+    {
+      "name": "Shorting hat",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:3000/sortingHat",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "3000",
+          "path": [
+            "sortingHat"
+          ]
+        }
+      },
+      "response": []
+    }
+  ],
+  "variable": [
+    {
+      "key": "potter",
+      "value": "http://localhost:3000/"
+    }
+  ]
+}
